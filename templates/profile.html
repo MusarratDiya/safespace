@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Profile - Safe Space</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <h1>Safe Space</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('mood_tracker') }}">Mood Tracker</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="profile-card">
+      <h2>Your Profile</h2>
+      <div class="profile-info">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Role:</strong> {{ user.role|capitalize }}</p>
+        <p><strong>Email:</strong> {{ user.email if user.email else "Not set" }}</p>
+      </div>
+
+      <h3>Update Profile</h3>
+      <form method="POST" action="{{ url_for('profile') }}">
+        <label for="email" class="form-label">Email:</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" value="{{ user.email or '' }}" class="form-input" />
+
+        <label for="password" class="form-label">New Password:</label>
+        <input id="password" name="password" type="password" placeholder="Leave blank to keep current" class="form-input" />
+
+        <button type="submit" class="btn-primary">Update Profile</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Safe Space - Mental Health Support</p>
+  </footer>
+</body>
+</html>

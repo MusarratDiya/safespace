@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Inbox</h2>
+<ul>
+    {% for convo in conversations %}
+        <li>
+            <a href="{{ convo.chat_url }}">
+                <strong>{{ convo.username }}</strong><br>
+                <span class="preview">{{ convo.last_text[:50] }}{% if convo.last_text|length > 50 %}...{% endif %}</span>
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

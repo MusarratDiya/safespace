@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Chat with {{ receiver_id }}</h2>
+
+<div class="chat-box">
+    {% for msg in chat_messages %}
+        <div class="chat-msg {{ 'me' if msg.username == session.get('username') else 'other' }}">
+            <span class="sender">{{ msg.username }}</span>
+            <p class="message">{{ msg.message }}</p>
+        </div>
+    {% endfor %}
+</div>
+
+<form method="POST" class="chat-form">
+    <input type="text" name="message" placeholder="Type your message..." required autocomplete="off">
+    <button type="submit">Send</button>
+</form>
+{% endblock %}

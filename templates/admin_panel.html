@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Panel – Listener Applications</h2>
+{% if error %}
+<p>Error: {{ error }}</p>
+{% endif %}
+<ul>
+    {% for app in app_list %}
+        <li>
+            {{ app.username }} - Status: {{ app.status }} 
+            {% if app.status == 'pending' %}
+                <a href="{{ app.approve_url }}">Approve</a>
+                <a href="{{ app.reject_url }}">Reject</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

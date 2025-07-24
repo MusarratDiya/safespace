@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mood Tracker - Safe Space</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <h1>Safe Space</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('profile') }}">Profile</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>How are you feeling today?</h2>
+      <form method="POST" action="{{ url_for('mood_tracker') }}">
+        <label for="mood" class="form-label">Select your mood:</label>
+        <select id="mood" name="mood" class="form-select" required>
+          <option value="" disabled selected>Choose mood</option>
+          <option value="Happy">😊 Happy</option>
+          <option value="Sad">😢 Sad</option>
+          <option value="Anxious">😰 Anxious</option>
+          <option value="Calm">😌 Calm</option>
+          <option value="Angry">😠 Angry</option>
+          <option value="Excited">🤩 Excited</option>
+          <option value="Tired">😴 Tired</option>
+        </select>
+<!-- 
+        <label for="notes" class="form-label">Additional notes (optional):</label>
+        <textarea id="notes" name="notes" rows="4" placeholder="Write about your day..." class="form-textarea"></textarea> -->
+
+        <button type="submit" class="btn-primary">Submit Mood</button>
+      </form>
+    </section>
+
+    {% if moods %}
+      <section>
+        <h3>Your Mood History</h3>
+        <ul class="mood-history-list">
+          {% for mood in moods %}
+            <li>
+              <strong>{{ mood.date.strftime('%b %d, %Y') }}</strong>: 
+              {{ mood.mood }} {% if mood.notes %} - "{{ mood.notes }}" {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Safe Space - Mental Health Support</p>
+  </footer>
+</body>
+</html>

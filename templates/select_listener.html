@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Select a Listener</h2>
+<ul>
+    {% for listener in listeners %}
+        <li><a href="{{ url_for('chat', receiver_id=listener.id) }}">{{ listener.username }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

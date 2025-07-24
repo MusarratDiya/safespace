@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Listener Application</h2>
+{% if confirmation %}
+    <p>Your application has been submitted! We'll notify you upon approval.</p>
+{% elif error %}
+    <p>Error: {{ error }}</p>
+{% endif %}
+{% endblock %}

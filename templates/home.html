@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safe Space - Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" /> -->
+
+</head>
+<body>
+  <header>
+    <h1>Safe Space</h1>
+    {% if 'user_id' in session %}
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('profile') }}">Profile</a> |
+        <a href="{{ url_for('mood_tracker') }}">Mood Tracker</a>
+        {% for link in links %}
+          | <a href="{{ link.url }}">{{ link.label }}</a>
+        {% endfor %}
+        | <a href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+      <p>Welcome, {{ session.get('username', 'User') }}!</p>
+    {% else %}
+      <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('login') }}">Login</a> |
+        <a href="{{ url_for('register') }}">Register</a>
+      </nav>
+    {% endif %}
+  </header>
+
+  <main>
+    <h1>“Healing begins when we feel heard, understood, and supported.</h1>
+    <h1>Safe Space is here to walk with you every step of the way.”</h1>
+  </main>
+  
+  <footer>
+    <p>Safe Space &copy; 2025</p>
+  </footer>
+</body>
+</html>
