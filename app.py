@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 import openai
+from datetime import date, datetime, timedelta
 
 # Load environment variables
 load_dotenv()
@@ -55,10 +56,37 @@ class ChatMessage(db.Model):
     receiver_id = db.Column(db.Integer)
     message = db.Column(db.Text)
 
+class MoodEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    mood = db.Column(db.String(20))  # happy, okay, sad, etc.
+    date = db.Column(db.Date, default=date.today)
+
+class JournalEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Habit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class HabitEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'))
+    date = db.Column(db.Date, default=date.today)
+
 @app.route('/')
 def home():
+    print("Rendering home route")
     links = []
+    links.append({'url': url_for('helpline'), 'label': 'Emergency Helpline'})  # <-- Add this line
     if 'user_id' in session:
+        links.append({'url': url_for('journal'), 'label': 'Journal'})
+        links.append({'url': url_for('habit_tracker'), 'label': 'Habit Tracker'})
         links.append({'url': url_for('apply_listener'), 'label': 'Apply to be Listener'})
         links.append({'url': url_for('chat_inbox'), 'label': 'Inbox'})
         bot_user = User.query.filter_by(username='Bot').first()
@@ -285,15 +313,6 @@ def make_user_admin(username):
             print(f"User '{username}' not found!")
 # Updated app.py additions for Mood Tracker, Streak Counter, and Profile Page
 
-from datetime import date, datetime, timedelta
-
-# Add this model to your models section
-class MoodEntry(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    mood = db.Column(db.String(20))  # happy, okay, sad, etc.
-    date = db.Column(db.Date, default=date.today)
-
 # Helper to get streak
 def calculate_streak(user_id):
     entries = MoodEntry.query.filter_by(user_id=user_id).order_by(MoodEntry.date.desc()).all()
@@ -337,6 +356,99 @@ def profile():
     mood_entries = MoodEntry.query.filter_by(user_id=user.id).order_by(MoodEntry.date.desc()).limit(7).all()
     streak = calculate_streak(user.id)
     return render_template('profile.html', user=user, entries=mood_entries, streak=streak)
+
+@app.route('/journal', methods=['GET', 'POST'])
+def journal():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    user_id = session['user_id']
+    if request.method == 'POST':
+        content = request.form['content'].strip()
+        if content:
+            entry = JournalEntry(user_id=user_id, content=content)
+            db.session.add(entry)
+            db.session.commit()
+            flash("Journal entry added!")
+        return redirect(url_for('journal'))
+    entries = JournalEntry.query.filter_by(user_id=user_id).order_by(JournalEntry.created_at.desc()).all()
+    return render_template('journal.html', entries=entries)
+
+@app.route('/habits', methods=['GET', 'POST'])
+def habit_tracker():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    user_id = session['user_id']
+    if request.method == 'POST':
+        # Add new habit
+        if 'habit_name' in request.form:
+            name = request.form['habit_name'].strip()
+            if name:
+                db.session.add(Habit(user_id=user_id, name=name))
+                db.session.commit()
+                flash("Habit added!")
+        # Mark habit as done for a specific date
+        elif 'done_habit_id' in request.form and 'done_date' in request.form:
+            habit_id = int(request.form['done_habit_id'])
+            done_date_str = request.form['done_date']
+            # Convert string to date object
+            done_date = datetime.strptime(done_date_str, "%Y-%m-%d").date()
+            if not HabitEntry.query.filter_by(habit_id=habit_id, date=done_date).first():
+                db.session.add(HabitEntry(habit_id=habit_id, date=done_date))
+                db.session.commit()
+                flash("Habit marked as done!")
+        return redirect(url_for('habit_tracker'))
+    habits = Habit.query.filter_by(user_id=user_id).all()
+    from datetime import date, timedelta
+    week_dates = [(date.today() - timedelta(days=(date.today().weekday() - i) % 7)) for i in range(7)]
+    week_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    habit_done = {}
+    for habit in habits:
+        done_map = {}
+        for d in week_dates:
+            done_map[d.isoformat()] = HabitEntry.query.filter_by(habit_id=habit.id, date=d).first() is not None
+        habit_done[habit.id] = done_map
+    return render_template(
+        'habit_tracker.html',
+        habits=habits,
+        habit_done=habit_done,
+        week_dates=week_dates,
+        week_days=week_days
+    )
+
+@app.route('/helpline')
+def helpline():
+    helplines = [
+        {"name": "National Emergency Number", "number": "999"},
+        {"name": "Suicide Prevention Helpline", "number": "+8801779554391"},
+        {"name": "Kaan Pete Roi", "number": "+8809612119911", "website": "https://kaanpeteroi.org/"},
+        {"name": "Vent by Mindspace", "number": "+8809678678778", "website": "https://www.mindspacebd.com/"},
+        {"name": "Tele-Mental Health Support (SHOJON)", "number": "09606119900"},
+        {"name": "National Institute of Mental Health (NIMH)", "number": "+8802-223374409", "website": "https://nimh.gov.bd/"},
+    ]
+    return render_template('helpline.html', helplines=helplines)
+
+@app.context_processor
+def inject_links():
+    links = []
+    links.append({'url': url_for('helpline'), 'label': 'Emergency Helpline'})
+    if 'user_id' in session:
+        links.append({'url': url_for('journal'), 'label': 'Journal'})
+        links.append({'url': url_for('habit_tracker'), 'label': 'Habit Tracker'})
+        links.append({'url': url_for('apply_listener'), 'label': 'Apply to be Listener'})
+        links.append({'url': url_for('chat_inbox'), 'label': 'Inbox'})
+        bot_user = User.query.filter_by(username='Bot').first()
+        if bot_user:
+            links.append({'url': url_for('chat', receiver_id=bot_user.id), 'label': 'Chat with Bot'})
+        if session['role'] == 'user':
+            links.append({'url': url_for('select_listener'), 'label': 'Chat with Listener'})
+        if session['role'] == 'listener':
+            links.append({'url': url_for('select_listener_for_listener'), 'label': 'Chat with Listener'})
+        if session['role'] == 'admin':
+            links.append({'url': url_for('admin_panel'), 'label': 'Admin Panel'})
+    else:
+        links.append({'url': url_for('login'), 'label': 'Login'})
+        links.append({'url': url_for('register'), 'label': 'Register'})
+    return dict(links=links)
 
 if __name__ == '__main__':
     with app.app_context():
