@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">My Journal</h2>
+    <form method="post" class="mb-8 bg-blue-900 rounded-lg shadow p-6">
+        <textarea name="content" rows="4" class="textarea textarea-bordered w-full mb-4 bg-blue-100 text-blue-900" placeholder="Write your thoughts..."></textarea>
+        <button type="submit" class="btn btn-primary w-full bg-blue-800 border-blue-800 hover:bg-blue-950 text-white">Add Entry</button>
+    </form>
+    {% if entries %}
+        <div class="space-y-4">
+            {% for entry in entries %}
+                <div class="bg-blue-800 border-l-4 border-blue-400 rounded p-4 shadow">
+                    <div class="text-xs text-blue-200 mb-2">{{ entry.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    <div class="whitespace-pre-line text-lg text-white">{{ entry.content }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-blue-300">No journal entries yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

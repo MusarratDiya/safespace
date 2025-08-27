@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-10">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Emergency Helpline</h2>
+    <div class="bg-blue-900 rounded-lg shadow p-6">
+        <ul class="space-y-4">
+            {% for h in helplines %}
+            <li class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-blue-800 rounded p-3">
+                <div>
+                    <span class="text-white font-semibold">{{ h.name }}</span>
+                    {% if h.website %}
+                        <a href="{{ h.website }}" target="_blank" class="ml-2 text-blue-200 underline text-sm">Website</a>
+                    {% endif %}
+                </div>
+                {% if h.number %}
+                    <a href="tel:{{ h.number }}" class="btn btn-info btn-sm mt-2 sm:mt-0">{{ h.number }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <p class="text-center text-blue-300 mt-6">If you or someone you know is in crisis, please call one of the numbers above immediately.</p>
+</div>
+{% endblock %}

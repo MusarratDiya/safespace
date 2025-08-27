@@ -1,9 +1,12 @@
+
 {% extends "base.html" %}
 {% block content %}
-<h2>Listener Application</h2>
-{% if confirmation %}
-    <p>Your application has been submitted! We'll notify you upon approval.</p>
-{% elif error %}
-    <p>Error: {{ error }}</p>
-{% endif %}
+<div class="max-w-lg mx-auto mt-16 bg-blue-900 rounded-lg shadow p-8">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-100">Listener Application</h2>
+    {% if confirmation %}
+        <p class="text-green-200 text-center">Your application has been submitted! We'll notify you upon approval.</p>
+    {% elif error %}
+        <p class="text-red-200 text-center">Error: {{ error }}</p>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto mt-16 bg-blue-900 rounded-lg shadow p-8 text-blue-100">
+  <h2 class="text-2xl font-bold mb-4">Anonymity Settings</h2>
+  <form method="POST">
+    <label class="flex items-center gap-2 mb-4">
+      <input type="checkbox" name="is_anonymous" value="1" {% if is_anonymous %}checked{% endif %} class="checkbox" />
+      <span>Show my username as "Anonymous" to others</span>
+    </label>
+    <p class="text-sm text-blue-200 mb-6">This applies only to normal users. Listeners and admins are never anonymous.</p>
+    <button type="submit" class="btn">Save</button>
+  </form>
+</div>
+{% endblock %} 

@@ -1,9 +1,16 @@
+
 {% extends "base.html" %}
 {% block content %}
-<h2>Create Admin</h2>
-<form method="POST">
-    <label>Username: <input type="text" name="username"></label>
-    <label>Password: <input type="password" name="password"></label>
-    <button type="submit">Create Admin</button>
-</form>
+<div class="max-w-md mx-auto mt-16 bg-blue-900 rounded-lg shadow p-8">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-100">Create Admin</h2>
+    <form method="POST" class="space-y-4">
+        <label class="block text-blue-100">Username:
+            <input type="text" name="username" class="input input-bordered w-full bg-blue-100 text-blue-900 mt-1" required>
+        </label>
+        <label class="block text-blue-100">Password:
+            <input type="password" name="password" class="input input-bordered w-full bg-blue-100 text-blue-900 mt-1" required>
+        </label>
+        <button type="submit" class="btn btn-primary w-full bg-blue-800 border-blue-800 hover:bg-blue-950 text-white">Create Admin</button>
+    </form>
+</div>
 {% endblock %}

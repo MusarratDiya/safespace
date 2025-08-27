@@ -1,18 +1,26 @@
+
 {% extends "base.html" %}
 {% block content %}
-<h2>Admin Panel – Listener Applications</h2>
-{% if error %}
-<p>Error: {{ error }}</p>
-{% endif %}
-<ul>
-    {% for app in app_list %}
-        <li>
-            {{ app.username }} - Status: {{ app.status }} 
-            {% if app.status == 'pending' %}
-                <a href="{{ app.approve_url }}">Approve</a>
-                <a href="{{ app.reject_url }}">Reject</a>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+<div class="max-w-2xl mx-auto mt-10">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Admin Panel – Listener Applications</h2>
+    {% if error %}
+        <p class="text-red-200 text-center mb-4">Error: {{ error }}</p>
+    {% endif %}
+    <div class="bg-blue-900 rounded-lg shadow p-6">
+        <ul class="divide-y divide-blue-800">
+            {% for app in app_list %}
+                <li class="py-3 flex flex-col md:flex-row md:items-center md:justify-between">
+                    <span class="text-blue-100 font-semibold">{{ app.username }}</span>
+                    <span class="text-blue-200 ml-2">Status: {{ app.status }}</span>
+                    {% if app.status == 'pending' %}
+                        <span class="flex gap-2 mt-2 md:mt-0">
+                            <a href="{{ app.approve_url }}" class="btn btn-success btn-sm">Approve</a>
+                            <a href="{{ app.reject_url }}" class="btn btn-error btn-sm">Reject</a>
+                        </span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

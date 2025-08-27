@@ -1,43 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Safe Space - Home</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <!-- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" /> -->
 
-</head>
-<body>
-  <header>
-    <h1>Safe Space</h1>
-    {% if 'user_id' in session %}
-      <nav>
-        <a href="{{ url_for('home') }}">Home</a> |
-        <a href="{{ url_for('profile') }}">Profile</a> |
-        <a href="{{ url_for('mood_tracker') }}">Mood Tracker</a>
-        {% for link in links %}
-          | <a href="{{ link.url }}">{{ link.label }}</a>
-        {% endfor %}
-        | <a href="{{ url_for('logout') }}">Logout</a>
-      </nav>
-      <p>Welcome, {{ session.get('username', 'User') }}!</p>
-    {% else %}
-      <nav>
-        <a href="{{ url_for('home') }}">Home</a> |
-        <a href="{{ url_for('login') }}">Login</a> |
-        <a href="{{ url_for('register') }}">Register</a>
-      </nav>
+{% extends "base.html" %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-b from-blue-100 to-white py-16">
+    <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-4 text-center">“Healing begins when we feel heard, understood, and supported.”</h1>
+    <h2 class="text-2xl md:text-3xl text-blue-700 mb-8 text-center">Safe Space is here to walk with you every step of the way.</h2>
+    {% if 'user_id' in session and quote_text %}
+      <div class="mt-2 max-w-2xl text-center bg-blue-900 text-blue-100 rounded px-6 py-4">
+        <div class="text-sm uppercase tracking-wide text-blue-300">Quote of the day{% if quote_mood %} · {{ quote_mood|capitalize }}{% endif %}</div>
+        <div class="mt-1 text-lg">“{{ quote_text }}”</div>
+      </div>
     {% endif %}
-  </header>
-
-  <main>
-    <h1>“Healing begins when we feel heard, understood, and supported.</h1>
-    <h1>Safe Space is here to walk with you every step of the way.”</h1>
-  </main>
-  
-  <footer>
-    <p>Safe Space &copy; 2025</p>
-  </footer>
-</body>
-</html>
+    {% if 'user_id' in session %}
+        <p class="text-lg text-blue-800 mb-2">Welcome, {{ session.get('username', 'User') }}!</p>
+    {% endif %}
+</div>
+{% endblock %}
+  <header>

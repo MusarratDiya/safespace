@@ -7,16 +7,34 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-base-100 text-base-content min-h-screen">
-    <header>
-        <h1>Safe Space</h1>
-        <nav>
-            {% for link in links %}
-                <a href="{{ link.url }}">{{ link.label }}</a>
-            {% endfor %}
-            {% if session.get('user_id') %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% endif %}
-        </nav>
+    <header class="sticky top-0 z-50 bg-white shadow-xl">
+        <div class="container mx-auto px-4 py-3 flex flex-row items-center justify-between">
+            <h1 class="text-2xl font-bold text-black tracking-tight">Safe Space</h1>
+            <nav class="flex flex-nowrap gap-2 justify-end overflow-x-auto">
+                <a href="{{ url_for('home') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Home</a>
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('profile') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Profile</a>
+                    <a href="{{ url_for('mood_tracker') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Mood</a>
+                    <a href="{{ url_for('journal') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Journal</a>
+                    <a href="{{ url_for('habit_tracker') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Habit</a>
+                    <a href="{{ url_for('meditate') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Meditate</a>
+                    <a href="{{ url_for('groups') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Groups</a>
+                    <a href="{{ url_for('chat_inbox') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Inbox</a>
+                    <a href="{{ url_for('select_listener') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">ListenerChat</a>
+                    <!-- <a href="{{ url_for('chat_inbox') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Chat with Bot</a> -->
+                    <a href="{{ url_for('apply_listener') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Apply2L</a>
+                    {% if session.get('role') == 'admin' %}
+                        <a href="{{ url_for('admin_panel') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('helpline') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Helpline</a>
+                    <a href="{{ url_for('logout') }}" class="text-sm rounded-full px-4 py-2 text-white bg-red-500/90 hover:bg-red-500 hover:ring-red-400 ring-1 ring-red-400 transition-all duration-200 shadow whitespace-nowrap">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Login</a>
+                    <a href="{{ url_for('register') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Register</a>
+                    <a href="{{ url_for('helpline') }}" class="text-sm rounded-full px-4 py-2 text-black/80 hover:text-black bg-transparent hover:bg-gray-100 ring-1 ring-gray-200 hover:ring-gray-300 transition-all duration-200 shadow-sm whitespace-nowrap">Helpline</a>
+                {% endif %}
+            </nav>
+        </div>
     </header>
     <main>
         {% with messages = get_flashed_messages() %}

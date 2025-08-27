@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+  <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">{{ group.name }}</h2>
+
+  {% if session.get('role') == 'user' %}
+  <form method="POST" class="mb-4 flex items-center justify-between bg-blue-100 rounded p-3">
+    <div class="flex items-center gap-2">
+      <input type="hidden" name="set_anonymous" value="{{ 0 if current_is_anonymous else 1 }}">
+      <span class="text-blue-900 text-sm">Anonymity:</span>
+      <span class="text-blue-900 font-semibold">{{ 'On' if current_is_anonymous else 'Off' }}</span>
+    </div>
+    <button type="submit" class="btn btn-sm">Turn {{ 'Off' if current_is_anonymous else 'On' }}</button>
+  </form>
+  {% endif %}
+
+  <div class="bg-blue-900 rounded-lg shadow p-6 mb-4 h-96 overflow-y-auto flex flex-col gap-2">
+    {% for msg in chat_messages %}
+      <div class="flex {{ 'justify-end' if msg.is_self else 'justify-start' }}">
+        <div class="rounded-lg px-4 py-2 max-w-xs {{ 'bg-blue-800 text-white' if msg.is_self else 'bg-blue-100 text-blue-900' }}">
+          <span class="block text-xs font-semibold mb-1">{{ msg.username }}</span>
+          <p class="whitespace-pre-line">{{ msg.message }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <form method="POST" class="flex gap-2">
+    <input type="text" name="message" placeholder="Type your message..." required autocomplete="off" class="input input-bordered flex-1 bg-blue-100 text-blue-900">
+    <button type="submit" class="btn btn-primary bg-blue-800 border-blue-800 hover:bg-blue-950 text-white">Send</button>
+  </form>
+</div>
+{% endblock %} 

@@ -1,9 +1,35 @@
+
 {% extends "base.html" %}
 {% block content %}
-<h2>Select a Listener</h2>
-<ul>
-    {% for listener in listeners %}
-        <li><a href="{{ url_for('chat', receiver_id=listener.id) }}">{{ listener.username }}</a></li>
-    {% endfor %}
-</ul>
+<div class="max-w-lg mx-auto mt-16 bg-blue-900 rounded-lg shadow p-8">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-100">Select a Listener</h2>
+    <ul class="divide-y divide-blue-800">
+        {% for listener in listeners %}
+            {% set stats = rating_stats.get(listener.id, {"avg": 0.0, "count": 0}) %}
+            <li class="py-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                        <a href="{{ url_for('chat', receiver_id=listener.id) }}" class="block hover:bg-blue-800 rounded px-2 py-1 text-blue-100 font-semibold">{{ listener.username }}</a>
+                        <p class="text-blue-200 text-sm mt-1">Avg rating: {{ '%.1f'|format(stats.avg) }} / 5 ({{ stats.count }} rating{{ '' if stats.count == 1 else 's' }})</p>
+                    </div>
+                    {% if chatted_ids and (listener.id in chatted_ids) %}
+                        <form method="POST" action="{{ url_for('rate_listener', listener_id=listener.id) }}" class="flex items-center gap-2">
+                            <label for="score-{{ listener.id }}" class="sr-only">Rate</label>
+                            <select name="score" id="score-{{ listener.id }}" class="select select-sm">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected>3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm">Rate</button>
+                        </form>
+                    {% else %}
+                        <span class="text-blue-300 text-sm">Chat to rate</span>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

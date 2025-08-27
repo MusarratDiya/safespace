@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto mt-16 bg-blue-900 rounded-lg shadow p-8 text-blue-100">
+  <h2 class="text-2xl font-bold mb-4">Mindful Breathing</h2>
+  <p class="text-blue-200 mb-4">Select a duration and follow the breathing cue. Inhale as the circle expands, exhale as it contracts.</p>
+
+  <form id="timer-form" class="flex items-center gap-3 mb-6">
+    <label for="duration" class="text-sm">Duration:</label>
+    <select id="duration" class="select select-sm text-black">
+      <option value="60">1 minute</option>
+      <option value="180">3 minutes</option>
+      <option value="300">5 minutes</option>
+      <option value="600">10 minutes</option>
+    </select>
+    <button id="start-btn" type="button" class="btn btn-sm">Start</button>
+    <button id="stop-btn" type="button" class="btn btn-sm" disabled>Stop</button>
+  </form>
+
+  <div class="flex flex-col items-center">
+    <div id="circle" class="w-24 h-24 rounded-full bg-blue-300 opacity-90 transition-all duration-400 ease-in-out"></div>
+    <p id="cue" class="mt-4 text-lg font-semibold">Ready</p>
+    <p id="countdown" class="mt-1 text-sm text-blue-200"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const circle = document.getElementById('circle');
+  const cue = document.getElementById('cue');
+  const countdown = document.getElementById('countdown');
+  const startBtn = document.getElementById('start-btn');
+  const stopBtn = document.getElementById('stop-btn');
+  const durationSel = document.getElementById('duration');
+
+  let totalMs = 0;
+  let remainingMs = 0;
+  let interval = null;
+  let phase = 'inhale';
+  const inhaleMs = 4000;
+  const holdMs = 2000;
+  const exhaleMs = 4000;
+  const cycleMs = inhaleMs + holdMs + exhaleMs;
+
+  function format(ms){
+    const s = Math.max(0, Math.ceil(ms/1000));
+    const m = Math.floor(s/60);
+    const ss = (s%60).toString().padStart(2,'0');
+    return `${m}:${ss}`;
+  }
+
+  function setCircle(size){
+    circle.style.width = size + 'rem';
+    circle.style.height = size + 'rem';
+  }
+
+  function setPhase(p){
+    phase = p;
+    if(p==='inhale'){
+      cue.textContent = 'Inhale';
+      setCircle(12);
+    } else if(p==='hold'){
+      cue.textContent = 'Hold';
+      setCircle(12);
+    } else {
+      cue.textContent = 'Exhale';
+      setCircle(6);
+    }
+  }
+
+  function updateCountdown(){
+    countdown.textContent = `Remaining: ${format(remainingMs)}`;
+  }
+
+  function runCycle(){
+    let t = 0;
+    setPhase('inhale');
+    const step = 100;
+    clearInterval(interval);
+    interval = setInterval(()=>{
+      t += step;
+      remainingMs -= step;
+      if(remainingMs <= 0){
+        stop();
+        cue.textContent = 'Done';
+        return;
+      }
+      if(phase==='inhale' && t>=inhaleMs){
+        setPhase('hold');
+      } else if(phase==='hold' && t>=(inhaleMs+holdMs)){
+        setPhase('exhale');
+      } else if(phase==='exhale' && t>=cycleMs){
+        t = 0;
+        setPhase('inhale');
+      }
+      updateCountdown();
+    }, step);
+  }
+
+  function start(){
+    totalMs = parseInt(durationSel.value, 10)*1000;
+    remainingMs = totalMs;
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    setCircle(6);
+    circle.classList.add('transition-all');
+    runCycle();
+  }
+
+  function stop(){
+    clearInterval(interval);
+    interval = null;
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    setCircle(6);
+    updateCountdown();
+  }
+
+  startBtn.addEventListener('click', ()=>{ if(!interval) start(); });
+  stopBtn.addEventListener('click', stop);
+  setCircle(6);
+  updateCountdown();
+})();
+</script>
+{% endblock %} 

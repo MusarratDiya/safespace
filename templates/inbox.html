@@ -1,14 +1,19 @@
+
 {% extends "base.html" %}
 {% block content %}
-<h2>Your Inbox</h2>
-<ul>
-    {% for convo in conversations %}
-        <li>
-            <a href="{{ convo.chat_url }}">
-                <strong>{{ convo.username }}</strong><br>
-                <span class="preview">{{ convo.last_text[:50] }}{% if convo.last_text|length > 50 %}...{% endif %}</span>
-            </a>
-        </li>
-    {% endfor %}
-</ul>
+<div class="max-w-xl mx-auto mt-10">
+    <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Your Inbox</h2>
+    <div class="bg-blue-900 rounded-lg shadow p-6">
+        <ul class="divide-y divide-blue-800">
+            {% for convo in conversations %}
+                <li class="py-3">
+                    <a href="{{ convo.chat_url }}" class="block hover:bg-blue-800 rounded px-2 py-1">
+                        <span class="font-semibold text-blue-100">{{ convo.username }}</span><br>
+                        <span class="text-blue-200 text-sm">{{ convo.last_text[:50] }}{% if convo.last_text|length > 50 %}...{% endif %}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}

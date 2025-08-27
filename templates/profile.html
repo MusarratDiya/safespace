@@ -1,46 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Profile - Safe Space</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-</head>
-<body>
-  <header>
-    <h1>Safe Space</h1>
-    <nav>
-      <a href="{{ url_for('home') }}">Home</a>
-      <a href="{{ url_for('mood_tracker') }}">Mood Tracker</a>
-      <a href="{{ url_for('logout') }}">Logout</a>
-    </nav>
-  </header>
 
-  <main>
-    <section class="profile-card">
-      <h2>Your Profile</h2>
-      <div class="profile-info">
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Role:</strong> {{ user.role|capitalize }}</p>
-        <p><strong>Email:</strong> {{ user.email if user.email else "Not set" }}</p>
-      </div>
+{% extends "base.html" %}
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] bg-gradient-to-b from-blue-100 to-white py-16">
+    <div class="w-full max-w-xl">
+        <h2 class="text-3xl font-bold mb-6 text-center text-blue-900">Your Profile</h2>
 
-      <h3>Update Profile</h3>
-      <form method="POST" action="{{ url_for('profile') }}">
-        <label for="email" class="form-label">Email:</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" value="{{ user.email or '' }}" class="form-input" />
+        {% if quote_text %}
+        <div class="rounded-lg shadow p-4 mb-6 bg-blue-900 text-blue-100">
+            <div class="text-xs uppercase tracking-wide text-blue-300">Quote of the day{% if quote_mood %} · {{ quote_mood|capitalize }}{% endif %}</div>
+            <div class="mt-1 text-base">“{{ quote_text }}”</div>
+        </div>
+        {% endif %}
 
-        <label for="password" class="form-label">New Password:</label>
-        <input id="password" name="password" type="password" placeholder="Leave blank to keep current" class="form-input" />
+        <div class="rounded-lg shadow p-6 mb-8 bg-blue-900 text-blue-100">
+            <div class="mb-6">
+                <p class="text-lg"><span class="font-semibold">Username:</span> {{ user.username }}</p>
+                <p class="text-sm text-blue-300"><span class="font-semibold text-blue-200">Role:</span> {{ user.role|capitalize }}</p>
+                <p class="text-sm text-blue-300"><span class="font-semibold text-blue-2 00">Email:</span> {{ user.email if user.email else "Not set" }}</p>
+            </div>
+            <h3 class="text-xl font-semibold mb-4">Update Profile</h3>
+            <form method="POST" action="{{ url_for('profile') }}" class="space-y-4">
+                <label for="email" class="block text-sm text-blue-200">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" value="{{ user.email or '' }}" class="input input-bordered w-full bg-blue-100 text-blue-900" />
 
-        <button type="submit" class="btn-primary">Update Profile</button>
-      </form>
-    </section>
-  </main>
+                <label for="password" class="block text-sm text-blue-200">New Password</label>
+                <input id="password" name="password" type="password" placeholder="Leave blank to keep current" class="input input-bordered w-full bg-blue-100 text-blue-900" />
 
-  <footer>
-    <p>&copy; 2025 Safe Space - Mental Health Support</p>
-  </footer>
-</body>
-</html>
+                <button type="submit" class="btn w-full bg-blue-800 border-blue-800 hover:bg-blue-950 text-white">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

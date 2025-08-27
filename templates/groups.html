@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto mt-12">
+  <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">Groups</h2>
+
+  <div class="bg-blue-900 rounded p-4 text-blue-100 mb-6">
+    <form method="GET" class="flex gap-2 mb-3">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search groups..." class="input input-bordered flex-1 bg-blue-100 text-blue-900">
+      <button class="btn">Search</button>
+    </form>
+    <form method="POST" class="flex flex-col gap-2 md:flex-row md:items-center">
+      <input type="text" name="name" placeholder="New group name" required class="input input-bordered flex-1 bg-blue-100 text-blue-900">
+      <input type="text" name="description" placeholder="Description (optional)" class="input input-bordered flex-1 bg-blue-100 text-blue-900">
+      <button type="submit" class="btn">Create</button>
+    </form>
+  </div>
+
+  <ul class="bg-blue-900 rounded divide-y divide-blue-800 text-blue-100">
+    {% for g in groups %}
+      <li class="p-4 flex items-center justify-between">
+        <div>
+          <div class="font-semibold">{{ g.name }}</div>
+          {% if g.description %}<div class="text-blue-200 text-sm">{{ g.description }}</div>{% endif %}
+        </div>
+        <div class="flex items-center gap-2">
+          {% if g.id in my_group_ids %}
+            <a href="{{ url_for('group_chat', group_id=g.id) }}" class="btn btn-sm">Open</a>
+          {% else %}
+            <form method="POST" action="{{ url_for('join_group', group_id=g.id) }}">
+              <button type="submit" class="btn btn-sm">Join</button>
+            </form>
+          {% endif %}
+          {% if session.get('role') == 'admin' %}
+            <form method="POST" action="{{ url_for('delete_group', group_id=g.id) }}" onsubmit="return confirm('Delete this group?');">
+              <button type="submit" class="btn btn-sm btn-error">Delete</button>
+            </form>
+          {% endif %}
+        </div>
+      </li>
+    {% else %}
+      <li class="p-4 text-center text-blue-200">No groups found.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %} 
