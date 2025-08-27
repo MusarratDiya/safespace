@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Migrate
 openai
 python-dotenv
+gunicorn
